@@ -1,0 +1,8 @@
+template:
+  "7720:65535:998": "Thresholds Customer (Simple, 9G)"
+  "7720:65535:9990": "Thresholds Customer (Simple, 9G)"
+  "7720:65535:9991": "Thresholds Colo"
+  "7720:65535:9992": "Thresholds VPS"
+ip_group:
+  "7720:65535:998": "No Protection"
+  "7720:65535:999": "Protection"
