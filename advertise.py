@@ -6,22 +6,21 @@ from api.gobgp_pb2 import ListPathRequest, Family
 from api.gobgp_pb2_grpc import GobgpApiStub
 from config import Config
 
+
 # Function to get community from GoBGP
 def get_community_from_gobgp(stub, resource, name, family):
-    request = ListPathRequest(
-        table_type=resource,
-        name=name,
-        family=family
-    )
+    request = ListPathRequest(table_type=resource, name=name, family=family)
     response = stub.ListPath(request)
     communities = []
     for path in response.paths:
         for attr in path.pattrs:
-            if attr.WhichOneof('attr_type') == 'community':
+            if attr.WhichOneof("attr_type") == "community":
                 communities.extend(attr.community.communities)
     return communities
 
+
 # 假设你已经有了 gobgp 的 .proto 文件编译生成的 Python 代码：gobgp_pb2 和 gobgp_pb2_grpc
+
 
 def get_as_path_and_community(prefix):
     # 创建与 GoBGP 的 gRPC 连接
@@ -30,7 +29,9 @@ def get_as_path_and_community(prefix):
 
     # 构造请求，查询指定前缀的 AS 路径
     family = Family(afi=Family.AFI_IP, safi=Family.SAFI_UNICAST)  # IPv4 unicast
-    request = ListPathRequest(table_type=0, family=family, prefixes=[{'prefix': prefix}])
+    request = ListPathRequest(
+        table_type=0, family=family, prefixes=[{"prefix": prefix}]
+    )
     paths = list(stub.ListPath(request))
     if not paths:
         print(f"No path found for {prefix}")
@@ -42,7 +43,9 @@ def get_as_path_and_community(prefix):
             if attr.Is(attribute_pb2.AsPathAttribute.DESCRIPTOR):
                 as_path_attr = attribute_pb2.AsPathAttribute()
                 attr.Unpack(as_path_attr)
-                as_path = " ".join([Config.EXABGP_ASN, *map(str, as_path_attr.segments[0].numbers[1:])])
+                as_path = " ".join(
+                    [Config.EXABGP_ASN, *map(str, as_path_attr.segments[0].numbers[1:])]
+                )
             if attr.Is(attribute_pb2.CommunitiesAttribute.DESCRIPTOR):
                 communities_attr = attribute_pb2.CommunitiesAttribute()
                 attr.Unpack(communities_attr)
@@ -60,15 +63,19 @@ def get_as_path_and_community(prefix):
     return as_path, communities, extended_communities, large_communities
 
 
-def broadcast_prefix_with_community(prefix, community, extended_community, large_community, as_path):
+def broadcast_prefix_with_community(
+    prefix, community, extended_community, large_community, as_path
+):
     # 配置 ExaBGP 的命名管道或输入文件的路径
-    with open(Config.EXABGP_CMD, 'w') as f:
+    with open(Config.EXABGP_CMD, "w") as f:
         # 构造 ExaBGP 的命令
-        command = f"announce route {prefix} next-hop self community [{" ".join(community)}] " \
-                  f"extended-community [{" ".join(extended_community)}] "\
-                  f"large-community [{" ".join(large_community)}] "\
-                  f"as-path [{as_path}] "
-        f.write(command + '\n')
+        command = (
+            f"announce route {prefix} next-hop self community [{' '.join(community)}] "
+            f"extended-community [{' '.join(extended_community)}] "
+            f"large-community [{' '.join(large_community)}] "
+            f"as-path [{as_path}] "
+        )
+        f.write(command + "\n")
         print(f"Sent to ExaBGP: {command}")
 
 
@@ -78,11 +85,15 @@ def main():
         sys.exit(1)
 
     prefix = sys.argv[1]
-    as_path, community, extended_community, large_community  = get_as_path_and_community(prefix)
+    as_path, community, extended_community, large_community = get_as_path_and_community(
+        prefix
+    )
 
     # 添加 Community
     community.append(Config.EXABGP_COMMUNITY)
-    broadcast_prefix_with_community(prefix, community, extended_community, large_community, as_path)
+    broadcast_prefix_with_community(
+        prefix, community, extended_community, large_community, as_path
+    )
 
 
 if __name__ == "__main__":
