@@ -46,7 +46,7 @@ def get_as_path_and_community(prefix):
     else:
         path = paths[0].destination.paths[0]
         as_path = ""
-        communities = extended_communities = large_communities = []
+        communities = large_communities = []
         for attr in path.pattrs:
             if attr.Is(attribute_pb2.AsPathAttribute.DESCRIPTOR):
                 as_path_attr = attribute_pb2.AsPathAttribute()
@@ -69,7 +69,7 @@ def get_as_path_and_community(prefix):
                 ]
 
     channel.close()
-    return as_path, communities, extended_communities, large_communities
+    return as_path, communities, large_communities
 
 
 def broadcast_prefix_with_community(prefix, community, large_community, as_path):
