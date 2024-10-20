@@ -56,7 +56,7 @@ def communities_init():
                     templates[i] = r.json()[0]["threshold_template_id"]
             else:
                 error(f"get threshold template failed: {r.status_code} {r.text}")
-    debug(
+    info(
         f"templates: {templates}, ip_groups: {ip_groups}, ip_groups_templates: {ip_groups_templates}"
     )
 
