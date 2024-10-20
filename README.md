@@ -26,6 +26,9 @@ ip_group:
   "7720:65535:999": "Protection"
 ```
 此处仅以large community为例，该项目依然支持普通community，应该不支持extended community（未测试）
+
+template中优先匹配与ip_group不同的community，如果匹配不到，则使用ip_group中的community
+
 ## 使用方法
 ### GoBGP 对接
 1. 安装GoBGP，并写好配置文件
