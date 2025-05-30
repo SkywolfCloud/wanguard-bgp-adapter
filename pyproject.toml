@@ -1,33 +1,38 @@
-[tool.poetry]
+[project]
 name = "wanguard-bgp-adapter"
 version = "0.1.0"
 description = ""
-authors = ["pppwaw <pppwaw@pppwaw.top>"]
+authors = [{ name = "pppwaw", email = "pppwaw@pppwaw.top" }]
+requires-python = "~=3.11"
 readme = "README.md"
-package-mode = false
+dependencies = [
+    "grpcio>=1.63.0,<2",
+    "python-dotenv>=1.0.1,<2",
+    "requests>=2.31.0,<3",
+    "pyyaml>=6.0.1,<7",
+    "grpcio-tools>=1.70.0,<2",
+]
 
-[tool.poetry.dependencies]
-python = "^3.11"
-grpcio = "^1.63.0"
-python-dotenv = "^1.0.1"
-requests = "^2.31.0"
-pyyaml = "^6.0.1"
-grpcio-tools = "^1.70.0"
+[dependency-groups]
+dev = [
+    "grpcio-tools>=1.63.0,<2",
+    "ruff>=0.4.2,<0.5",
+]
 
-[tool.poetry.dev-dependencies]
-grpcio-tools = "^1.63.0"
-ruff = "^0.4.2"
+[tool.uv]
+package = false
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.ruff]
 line-length = 120
 # https://beta.ruff.rs/docs/rules/
 # Exclude a variety of commonly ignored directories.
 respect-gitignore = true
+
 [tool.ruff.lint]
 ignore-init-module-imports = true
 select = ["E", "W", "F"]
 ignore = ["F401"]
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
