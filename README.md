@@ -34,14 +34,14 @@ template中优先匹配与ip_group不同的community，如果匹配不到，则�
 1. 安装GoBGP，并写好配置文件
 2. 编写 communities.yaml
 3. 编写 .env
-4. 运行 `python3 gobgp.py`
-5. 完成！
+4. 安装依赖：`uv sync`
+5. 运行 `uv run python gobgp.py`
+6. 完成！
 ### Wanguard 调用脚本（假设使用exabgp）
 1. 编写 .env
-2. 安装 pipx，详情请看 https://pipx.pypa.io/stable/
-3. 运行 `sudo -u andrisoft PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/local/bin pipx install poetry` 此处路径为示例，请根据自己的情况修改，不使用默认参数目的是使得wanguard的andrisoft账户也可使用。
-4. 在项目目录下运行 `sudo -u andrisoft poetry install`
-5. 注意更改项目权限，使得andrisoft账户可读取并运行
-6. 假设项目在 `/opt/wanguard-bgp-adapter`，那么wanguard 控制台的Response自定义脚本位置为`/usr/bin/sh -c "cd /opt/wanguard-bgp-adapter/ ; /usr/local/bin/poetry run python /opt/wanguard-bgp-adapter/advertise.py {prefix}"` 和 
-`/usr/bin/sh -c "cd /opt/wanguard-bgp-adapter/ ; /usr/local/bin/poetry run python /opt/wanguard-bgp-adapter/withdraw.py {prefix}"`
-7. 完成！
+2. 安装 uv，详情请看 https://docs.astral.sh/uv/getting-started/installation/
+3. 在项目目录下运行 `sudo -u andrisoft uv sync` 安装依赖
+4. 注意更改项目权限，使得andrisoft账户可读取并运行
+5. 假设项目在 `/opt/wanguard-bgp-adapter`，那么wanguard 控制台的Response自定义脚本位置为`/usr/bin/sh -c "cd /opt/wanguard-bgp-adapter/ ; uv run python /opt/wanguard-bgp-adapter/advertise.py {prefix}"` 和 
+`/usr/bin/sh -c "cd /opt/wanguard-bgp-adapter/ ; uv run python /opt/wanguard-bgp-adapter/withdraw.py {prefix}"`
+6. 完成！
